@@ -18,13 +18,13 @@ const ScheduleWidget = () => {
       script.async = true;
 
       // Set all the required attributes for Momence configuration
-      script.setAttribute('host_id', '13752');
+      script.setAttribute('host_id', '33905');
       script.setAttribute('locale', 'en');
-      script.setAttribute('location_ids', '[]');
+      script.setAttribute('location_ids', '[36372]');
       script.setAttribute('session_type', 'private');
       script.setAttribute('show_additional_teachers', 'true');
       script.setAttribute('show_substituted_teachers', 'true');
-      script.setAttribute('tag_ids', '[134462]');
+      script.setAttribute('tag_ids', '[137949]');
       script.setAttribute('teacher_ids', '[]');
       script.setAttribute('default_filter', 'show-all');
       script.setAttribute('hide_tags', 'true');
