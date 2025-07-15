@@ -1,27 +1,22 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const ScheduleWidget = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [scriptLoaded, setScriptLoaded] = useState(false);
 
   useEffect(() => {
     const loadMomenceScript = () => {
-      console.log('Starting to load Momence script...');
-      
       // Remove any existing script and styles
       const existingScript = document.querySelector('script[src*="momence.com/plugin"]');
       if (existingScript) {
         existingScript.remove();
-        console.log('Removed existing script');
       }
       
       const existingStyle = document.querySelector('#momence-styles');
       if (existingStyle) {
         existingStyle.remove();
-        console.log('Removed existing styles');
       }
 
       // Add CSS styles for Momence
@@ -33,21 +28,8 @@ const ScheduleWidget = () => {
           --momenceColorPrimary: 5, 97, 235;
           --momenceColorBlack: 3, 1, 13;
         }
-        
-        #ribbon-schedule {
-          min-height: 400px;
-          width: 100%;
-        }
       `;
       document.head.appendChild(style);
-      console.log('Added Momence styles');
-
-      // Ensure the target div exists before loading script
-      const targetDiv = document.getElementById('ribbon-schedule');
-      if (!targetDiv) {
-        console.error('Target div #ribbon-schedule not found');
-        return;
-      }
 
       // Create the script element with new configuration
       const script = document.createElement('script');
@@ -65,18 +47,14 @@ const ScheduleWidget = () => {
       script.setAttribute('tag_ids', '[137949]');
       script.setAttribute('default_filter', 'show-all');
       script.setAttribute('hide_tags', 'true');
+      
+      // Add start date parameter for August 02, 2025
       script.setAttribute('start_date', '2025-08-02');
 
       script.onload = () => {
         console.log('Momence script loaded successfully');
-        setScriptLoaded(true);
-        // Give more time for the widget to initialize and render
-        setTimeout(() => {
-          const scheduleElement = document.getElementById('ribbon-schedule');
-          console.log('Schedule element after load:', scheduleElement);
-          console.log('Schedule element innerHTML:', scheduleElement?.innerHTML);
-          setIsLoading(false);
-        }, 3000);
+        // Give the widget time to initialize
+        setTimeout(() => setIsLoading(false), 2000);
       };
       
       script.onerror = () => {
@@ -84,18 +62,13 @@ const ScheduleWidget = () => {
         setIsLoading(false);
       };
 
-      // Append to document head instead of body
-      document.head.appendChild(script);
-      console.log('Script added to document head');
+      // Append to document body
+      document.body.appendChild(script);
     };
 
-    // Wait a moment for the DOM to be ready
-    const timer = setTimeout(() => {
-      loadMomenceScript();
-    }, 100);
+    loadMomenceScript();
 
     return () => {
-      clearTimeout(timer);
       // Cleanup on unmount
       const existingScript = document.querySelector('script[src*="momence.com/plugin"]');
       if (existingScript) {
@@ -126,17 +99,10 @@ const ScheduleWidget = () => {
   }
 
   return (
-    <div className="w-full">
-      <div 
-        id="ribbon-schedule" 
-        className="momence-schedule-container animate-fade-in w-full min-h-[400px]" 
-      />
-      {scriptLoaded && (
-        <div className="text-center text-gray-500 mt-4">
-          <p>If the schedule doesn't appear, please refresh the page.</p>
-        </div>
-      )}
-    </div>
+    <div 
+      id="ribbon-schedule" 
+      className="momence-schedule-container animate-fade-in w-full" 
+    />
   );
 };
 
